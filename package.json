@@ -20,14 +20,13 @@
     "crypto"
   ],
   "author": "bcoders.gr",
-  "license": "MIT",
-  "repository": {
+  "license": "MIT",  "repository": {
     "type": "git",
-    "url": "git+https://github.com/bcoders-gr/eth-scrapper.git"
+    "url": "git+https://github.com/pagovitsa/eth-scrapper.git"
   },
-  "homepage": "https://github.com/bcoders-gr/eth-scrapper#readme",
+  "homepage": "https://github.com/pagovitsa/eth-scrapper#readme",
   "bugs": {
-    "url": "https://github.com/bcoders-gr/eth-scrapper/issues"
+    "url": "https://github.com/pagovitsa/eth-scrapper/issues"
   },
   "engines": {
     "node": ">=16.0.0"
