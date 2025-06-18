@@ -1,6 +1,6 @@
 {
   "name": "@bcoders.gr/eth-scrapper",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Electron web scraper for Etherscan transactions - External and Internal transaction hash extractor",
   "main": "index.js",
   "type": "module",
