@@ -18,12 +18,28 @@ npm install @bcoders.gr/eth-scrapper
 
 ## Usage
 
-### Basic Usage
+### As CLI Tool
+
+```bash
+# Install globally for CLI usage
+npm install -g @bcoders.gr/eth-scrapper
+
+# Run with default parameters
+npx @bcoders.gr/eth-scrapper 0x0023A1D0106185cBcC81b253a267b9d05015E0b7
+
+# Run with custom parameters
+npx @bcoders.gr/eth-scrapper 0x0023A1D0106185cBcC81b253a267b9d05015E0b7 10 500
+
+# Show help
+npx @bcoders.gr/eth-scrapper --help
+```
+
+### As NPM Module
 
 ```javascript
 import { runScraper } from '@bcoders.gr/eth-scrapper';
 
-// Scrape transactions for a specific token
+// Basic usage
 const result = await runScraper(
   '0x0023A1D0106185cBcC81b253a267b9d05015E0b7', // Token address
   10,  // Max concurrent windows

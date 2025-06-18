@@ -58,12 +58,15 @@ async function initializeApp() {
 
 
 async function runScraper(tokenAddress, maxWindows, totalPages) {
+    console.log('Initializing Electron app...');
     const electronApp = await initializeApp();
     
     // Check if we've already passed Cloudflare
     const skipTestWindow = hasPassedCloudflare();
+    console.log(`Cloudflare status: ${skipTestWindow ? 'Previously passed' : 'Need to check'}`);
     
     if (!skipTestWindow) {
+        console.log('Opening test window for Cloudflare check...');
         // Pre-solve any Cloudflare captcha before starting scrapers
         const testWindow = new BrowserWindow({
             width: 1200,
@@ -73,12 +76,24 @@ async function runScraper(tokenAddress, maxWindows, totalPages) {
         });
         
         const testUrl = `https://etherscan.io/advanced-filter?tkn=${tokenAddress}&txntype=2&ps=100&p=1`;
+        console.log(`Loading URL: ${testUrl}`);
         
         await testWindow.loadURL(testUrl);
     
     // Wait for the table to load or user to close window
     await new Promise((resolve) => {
         let resolved = false;
+        
+        // Add timeout after 30 seconds
+        const timeout = setTimeout(() => {
+            if (!resolved) {
+                console.log('Timeout reached, proceeding without Cloudflare verification');
+                resolved = true;
+                testWindow.close();
+                markCloudflareAsPassed();
+                resolve();
+            }
+        }, 30000);
         
         // Check for table every 2 seconds
         const checkTable = async () => {
@@ -99,8 +114,12 @@ async function runScraper(tokenAddress, maxWindows, totalPages) {
                             return false;
                         }
                     })()
-                `);                  if (tableExists) {
+                `);
+                
+                if (tableExists) {
+                    console.log('Table found! Cloudflare check passed.');
                     resolved = true;
+                    clearTimeout(timeout);
                     testWindow.close();
                     // Mark Cloudflare as passed
                     markCloudflareAsPassed();
@@ -114,16 +133,21 @@ async function runScraper(tokenAddress, maxWindows, totalPages) {
             if (!resolved) {
                 setTimeout(checkTable, 200);
             }
-        };          // Handle manual window closure
+        };
+        
+        // Handle manual window closure
         testWindow.on('closed', () => {
             if (!resolved) {
+                console.log('Test window closed manually');
                 resolved = true;
+                clearTimeout(timeout);
                 // Mark Cloudflare as passed even on manual close
                 markCloudflareAsPassed();
                 resolve();
             }
         });
-          // Start checking for table after initial load
+        
+        // Start checking for table after initial load
         setTimeout(checkTable, 200);
     });
     }
@@ -165,14 +189,21 @@ async function runScraper(tokenAddress, maxWindows, totalPages) {
 // Export the main function for use as a module
 export { runScraper };
 
-// Example usage (only runs when file is executed directly)
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Only run the example when this file is executed directly (not when imported)
+const isMainModule = process.argv[1] && process.argv[1].endsWith('index.js');
+
+if (isMainModule) {
+    console.log('Running as main module...');
+    // Example usage - Only runs when executed directly
     (async () => {
         try {
+            console.log('Starting Ethereum transaction scraper...');
             const result = await runScraper('0x0023A1D0106185cBcC81b253a267b9d05015E0b7', 10, 500);
             console.log('Scraping completed successfully!');
         } catch (error) {
             console.error('Scraping failed:', error);
         }
     })();
+} else {
+    console.log('Module imported, ready for use.');
 }

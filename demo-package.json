@@ -1,0 +1,14 @@
+{
+  "name": "eth-scrapper-demo",
+  "version": "1.0.0",
+  "description": "Demo project showing how to use @bcoders.gr/eth-scrapper",
+  "type": "module",
+  "main": "demo-usage.js",
+  "scripts": {
+    "demo": "node demo-usage.js",
+    "install-scrapper": "npm install @bcoders.gr/eth-scrapper"
+  },
+  "dependencies": {
+    "@bcoders.gr/eth-scrapper": "^1.2.0"
+  }
+}
